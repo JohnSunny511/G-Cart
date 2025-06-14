@@ -11,7 +11,7 @@ const Navbar = () => {
         navigate('/')
     }
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+    <nav className="flex items-center justify-between px-6 mb-6  md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
 
             <NavLink to='/' onClick={() => setOpen(false)}>
                 <img className="h-9" src={assets.logo} alt="logo" />
@@ -64,7 +64,7 @@ const Navbar = () => {
                 {!user ? (
                      <button onClick={() => {
                         setOpen(false);
-                        setShowUserLogiin(true);
+                        setShowUserLogin(true);
                      }} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
                     Login
                 </button>) : ( <button onClick={logout}className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
