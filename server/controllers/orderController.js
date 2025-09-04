@@ -16,7 +16,7 @@ export const placeOrderCOD = async (req,res) => {
         },0)
 
         //Add Tax Charge (2%)
-        amount += math.floor(amount * 0.02);
+        amount += Math.floor(amount * 0.02);
 
         await Order.create({
             userId,
@@ -36,13 +36,13 @@ export const placeOrderCOD = async (req,res) => {
 
 //Get Orders by UserId : /api/order/user
 
-export const getUserOrders = async () => {
+export const getUserOrders = async (req,res) => {
     try {
-        const {userId} = req.body;
+        const userId = req.userId;
         const orders = await Order.find({
             userId,
             $or: [{paymentType: "COD"}, {isPaid:true}]
-        }).populate("items.product.address").sort({createdAt:-1});
+        }).populate("items.product").sort({createdAt:-1});
         res.json({success:true,orders});
     } catch (error) {
         return res.json({success:false,message:error.message})
@@ -52,7 +52,7 @@ export const getUserOrders = async () => {
 
 //Get all orders (for seller/admin) : /api/order/seller
 
-export const getAllOrders = async () => {
+export const getAllOrders = async (req,res) => {
     try {
         const orders = await Order.find({
             $or: [{paymentType: "COD"}, {isPaid:true}]
