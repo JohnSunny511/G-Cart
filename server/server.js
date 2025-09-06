@@ -20,7 +20,7 @@ await connectDB()
 await connectCloudinary()
 
 //Allow multiple origins
-const allowedOrigins = ['http://localhost:5173','https://g-cart-test.vercel.app']   
+const allowedOrigins = ['http://localhost:5173','https://g-cart-iota.vercel.app/']   
 
 
 
