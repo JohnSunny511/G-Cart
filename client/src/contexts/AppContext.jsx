@@ -43,7 +43,7 @@ export const AppContextProvider = ({children}) => {
                 setUser(data.user)
                 setCartItems(data.user.cartItems)
             }else{
-                setIsSeller(false)
+                 setUser(null)
             }
         } catch (error) {
             setUser(null)

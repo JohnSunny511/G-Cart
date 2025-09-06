@@ -24,11 +24,13 @@ const onSubmitHandleer = async(event) => {
         price,
         offerPrice
     }
+     console.log("📦 Product Data before sending:", productData);
     const formData = new FormData();
     formData.append('productData', JSON.stringify(productData));
     for (let i=0; i < files.length; i++){
         formData.append('images',files[i])
     }
+    console.log("📸 Files attached:", files);
 
     const {data} = await axios.post('/api/product/add',formData)
 
@@ -40,10 +42,12 @@ const onSubmitHandleer = async(event) => {
         setPrice('');
         setOfferPrice('');
         setFiles([]);
+         console.log("✅ Response from backend:", data);
     }else{
         toast.error(data.message)
     }
   } catch (error) {
+     console.error("❌ Error in AddProduct:", error);
     toast.error(error.message)
   }
 }
@@ -61,6 +65,7 @@ const onSubmitHandleer = async(event) => {
                                   const updatedFiles = [...files];
                                   updatedFiles[index] = e.target.files[0]
                                   setFiles(updatedFiles)
+                                   console.log(`📸 File selected for slot ${index}:`, e.target.files[0]);
                                 }} 
                                 accept="image/*" type="file" id={`image${index}`} hidden />
                                 <img className="max-w-24 cursor-pointer" src={files[index] ? URL.createObjectURL(files[index]) : assets.upload_area} alt="uploadArea" width={100} height={100} />
