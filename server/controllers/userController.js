@@ -3,39 +3,54 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 //Register User :  /api/user/register
+
+
+
 export const register = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            return res.json({ success: false, message: "Missing Details" })
-        }
-
-        const existingUser = await User.findOne({ email })
-
-        if (existingUser)
-            return res.json({ success: false, message: "User Already Exists" })
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        const user = await User.create({ name, email, password: hashedPassword })
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-        res.cookie('token', token, {
-            httpOnly: true,   //Prevent javascript to access cookie
-            secure: process.env.NODE_EN === 'production',         //use secure cookie in production
-            sameSite: process.env.NODE_EN === 'production' ? 'none' : 'strict',    //CSRF Protection
-            maxAge: 7 * 24 * 60 * 60 * 1000,    //Cookie Expiration Time 
-        })
-
-        return res.json({ success: true, user: { email: user.email, name: user.name } })
-    } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message })
+    // ✅ Validate input
+    if (!name || !email || !password) {
+      return res.json({ success: false, message: "Missing Details" });
     }
 
-}
+    // ✅ Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.json({ success: false, message: "User Already Exists" });
+    }
+
+    // ✅ Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ Create user in DB
+    const user = await User.create({ name, email, password: hashedPassword });
+
+    // ✅ Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    // ✅ Set cookie with JWT
+    res.cookie('token', token, {
+      httpOnly: true,  // Not accessible by JS
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    // ✅ Return safe user info
+    return res.json({
+      success: true,
+      message: 'Registered successfully',
+      user: { name: user.name, email: user.email }
+    });
+
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 //Login User : /user/api/login
 export const login = async (req, res) => {
